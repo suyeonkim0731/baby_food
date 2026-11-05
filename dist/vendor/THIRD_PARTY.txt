@@ -1,0 +1,8 @@
+OCR engine: Tesseract.js 7.0.0 and Tesseract.js-core 7.0.0
+https://github.com/naptha/tesseract.js
+https://github.com/naptha/tesseract.js-core
+License: Apache-2.0 (see LICENSE-tesseract.txt)
+
+Language models: @tesseract.js-data/kor and @tesseract.js-data/eng, 4.0.0_best_int
+https://github.com/naptha/tessdata
+Tesseract language data are distributed under Apache-2.0.
