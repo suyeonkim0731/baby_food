@@ -32,5 +32,5 @@ q('#save-photo').onclick=()=>{validateSave();if(q('#save-photo').disabled)return
 q('#search-photo').onclick=()=>{const name=q('#photo-product-name').value.trim();if(!name){err('검색할 제품 이름을 입력해 주세요.');q('#photo-product-name').focus();return}state.view='all';state.category='전체';state.query=name;$('#search').value=name;syncFilters();render();dialog.close();$('#search').focus();$('#search').scrollIntoView({behavior:'smooth',block:'center'})};
 q('#photo-notes').onclick=e=>{const button=e.target.closest('[data-remove-note]');if(!button)return;const next=notes.filter(n=>n.id!==button.dataset.removeNote);try{localStorage.setItem('hanip-photo-notes-v1',JSON.stringify(next));notes=next;notesRender();toast('포장지 기록을 삭제했어요.')}catch{err('기록을 삭제하지 못했어요. 다시 시도해 주세요.')}};
 notesRender();
-const guideParagraph=$('#guide-dialog .guide-source p:last-child');guideParagraph.textContent='현재 버전은 10개 식품의 검증 결과를 담은 검색과 포장지 사진 인식을 제공해요. 사진은 브라우저 안에서 읽고, 확인한 텍스트만 별도 노트로 저장해요. 실시간 공공데이터 조회는 아직 연결되지 않았어요. 저장 정보는 이 브라우저에 보관돼요.';
+const guideParagraph=$('#guide-dialog .guide-source p:last-child');guideParagraph.textContent='현재 버전은 총 60개 식품의 검색과 포장지 사진 인식을 제공해요. 기존 10개는 즐겨찾기에 기본 추가돼요. 사진은 브라우저 안에서 읽고, 확인한 텍스트만 별도 노트로 저장해요. 실시간 공공데이터 조회는 아직 연결되지 않았어요. 저장 정보는 이 브라우저에 보관돼요.';
 })();
