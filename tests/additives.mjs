@@ -1,0 +1,26 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const context={window:{}};
+vm.runInNewContext(fs.readFileSync('dist/data.js','utf8'),context);
+vm.runInNewContext(fs.readFileSync('dist/additives.js','utf8'),context);
+const a=context.window.AdditiveNote,foods=context.window.FOOD_DATA;
+assert.equal(a.analyze(['쌀']).level,'blue');
+assert.equal(a.analyze([]).level,'unknown');
+assert.equal(a.analyze(['처음 보는 이름']).level,'unknown');
+assert.equal(a.analyze(['혼합제제']).level,'unknown');
+assert.equal(a.analyze(['구연산','구연산']).count,1);
+assert.equal(a.analyze(['구연산','구연산칼륨']).level,'yellow');
+assert.equal(a.analyze(['구연산','구연산칼륨','폴리인산나트륨']).level,'red');
+assert.equal(a.fromText('구연산칼륨').count,1);
+assert.equal(a.fromText('구연산철암모늄').entries[0].name,'구연산철암모늄');
+assert.equal(a.fromText('구연산칼륨추출물').count,0);
+assert.equal(a.fromText('구 연 산 칼 륨, 인산삼나트륨').count,2);
+assert.equal(a.analyze(['구연산','혼합제제']).unresolved.length,1);
+assert.equal(a.product({candidates:[{ingredients:['구연산']},{ingredients:['쌀']}]}).level,'unknown');
+assert.ok(!a.panel(a.analyze(['<img src=x onerror=alert(1)>'])).includes('<img'));
+assert.ok(a.panel(a.analyze(['구연산'])).includes('noopener noreferrer'));
+assert.equal(a.analyze(foods.find(p=>p.name==='앙팡 유기농 아기치즈 2단계').candidates[0].ingredients).count,2);
+assert.equal(a.analyze(foods.find(p=>p.name==='맘마밀 안심소스 로제치킨카레').candidates[0].ingredients).count,1);
+const counts={};for(const p of foods){const r=a.product(p);counts[r.level]=(counts[r.level]||0)+1;}
+console.log('PASS: boundaries, deduplication, aliases, unknowns, candidate differences, escaping, real records. Product levels:',counts);
