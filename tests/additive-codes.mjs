@@ -1,0 +1,14 @@
+import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';
+const ctx={window:{}};vm.runInNewContext(fs.readFileSync('dist/additive-codes.js','utf8'),ctx);const a=ctx.window.AdditiveCodes;
+const input=['en:e327','en:e330','en:e575','en:e621'];
+assert.equal(a.decode(input[0]).name,'젖산칼슘');assert.equal(a.decode(input[1]).name,'구연산');assert.equal(a.decode(input[2]).name,'글루코노델타락톤');assert.equal(a.decode(input[3]).nickname,'MSG');
+assert.equal(a.list(['en:e330','E330']).length,1);
+assert.equal(a.decode('en:e330i').known,false);assert.equal(a.decode('en:e9999').known,false);
+const html=a.cards(input);for(const name of ['젖산칼슘','구연산','글루코노델타락톤','L-글루탐산나트륨','영양 보충용','감칠맛용'])assert.ok(html.includes(name));
+assert.equal((html.match(/<article/g)||[]).length,4);assert.ok(html.includes('Codex'));
+assert.ok(a.cards([]).includes('무첨가로 확인된 것은 아니에요'));
+assert.ok(a.cards(['en:e9999']).includes('설명 준비 중'));
+assert.ok(!a.cards(['<img src=x onerror=alert(1)>']).includes('<img'));
+assert.ok(a.allergenPanel(['en:milk','en:soybeans']).includes('우유'));assert.ok(a.allergenPanel(['en:milk','en:soybeans']).includes('대두'));
+assert.ok(a.allergenPanel([]).includes('자료 미제공'));assert.ok(!a.allergenPanel(['<script>']).includes('<script>'));
+console.log('PASS: screenshot codes, exact mappings, subcode fallback, deduplication, accessible cards, unknown/missing data, Korean allergens and HTML escaping.');
